@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'mean-course';
+  posts: { title: string, content: string }[] = []
+
+  onPostAdded(post: { title: string, content: string }) {
+    this.posts.push(post)
+  }
 }
