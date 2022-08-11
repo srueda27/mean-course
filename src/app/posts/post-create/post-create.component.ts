@@ -1,4 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import IPost from '../post.model';
+import { PostsService } from '../services/posts.service';
 
 @Component({
   selector: 'app-post-create',
@@ -11,22 +14,28 @@ export class PostCreateComponent implements OnInit {
   twoWayBinding = ''
   enteredTitle = ''
 
-  @Output()
-  postCreated = new EventEmitter();
+  // @Output()
+  postCreated = new EventEmitter<IPost>();
 
-  constructor() {
-    console.log(this.oneWayBinging)
+  constructor(public postsService: PostsService) {
+    // console.log(this.oneWayBinging)
   }
 
   ngOnInit(): void {
   }
 
-  onAddPost(postInput: HTMLTextAreaElement) {
-    console.log('event binding: ', postInput.value)
+  onAddPost(form: NgForm, postInput?: HTMLTextAreaElement) {
+    /* console.log('event binding: ', postInput.value)
     console.log('1 way binding', this.oneWayBinging)
-    this.newPost = this.twoWayBinding
+    this.newPost = this.twoWayBinding */
 
-    const post = { title: this.enteredTitle, content: this.twoWayBinding }
-    this.postCreated.emit(post)
+    if (form.invalid) {
+      return
+    }
+
+    // const post: IPost = { title: form.value.title, content: form.value.content }
+    // this.postCreated.emit(post)
+    this.postsService.addPosts(form.value.title, form.value.content)
+    form.resetForm()
   }
 }
