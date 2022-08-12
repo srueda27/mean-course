@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
@@ -15,6 +16,7 @@ import { PostCreateComponent } from './posts/post-create/post-create.component';
 import { HeaderComponent } from './header/header.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
 import { PostsService } from './posts/services/posts.service';
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,7 @@ import { PostsService } from './posts/services/posts.service';
   ],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     FormsModule,
     BrowserAnimationsModule,
     MatInputModule,
@@ -33,7 +36,8 @@ import { PostsService } from './posts/services/posts.service';
     MatIconModule,
     MatToolbarModule,
     MatExpansionModule,
-    HttpClientModule
+    MatProgressSpinnerModule,
+    HttpClientModule,
   ],
   providers: [PostsService],
   bootstrap: [AppComponent]
