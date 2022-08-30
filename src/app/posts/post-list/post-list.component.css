@@ -14,3 +14,12 @@ mat-spinner {
 .info-text {
   text-align: center;
 }
+
+.post-image {
+  width: 100%;
+}
+
+.post-image img {
+  width: 50%;
+  box-shadow: 1px 1px 5px rgba(20, 15, 15, 0.5);
+}

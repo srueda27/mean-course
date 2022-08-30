@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -16,7 +17,8 @@ mongoose.connect(`mongodb+srv://nasa-admin:${process.env.MONGO_PASSWORD}@nasaclu
 
 app.use(cors())
 app.use(express.json())
+app.use('/images', express.static(path.join('backend/images')))
 
-app.use('/api/posts',postsRoutes)
+app.use('/api/posts', postsRoutes)
 
 module.exports = app;
