@@ -6,6 +6,10 @@ mat-spinner {
   margin: auto;
 }
 
+mat-paginator {
+  margin-top: 1rem;
+}
+
 :host {
   display: block;
   margin: 1rem 0;
@@ -16,7 +20,10 @@ mat-spinner {
 }
 
 .post-image {
-  width: 100%;
+  width: 50%;
+  margin: auto;
+  display: flex;
+  justify-content: center;
 }
 
 .post-image img {

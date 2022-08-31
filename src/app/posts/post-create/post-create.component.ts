@@ -56,11 +56,12 @@ export class PostCreateComponent implements OnInit {
             .subscribe(postData => {
               this.isLoading = false
               this.post = { id: postData._id, title: postData.title, content: postData.content, imagePath: postData.imagePath }
+              this.imagePreview = postData.imagePath
 
               this.form.setValue({
                 title: this.post.title,
                 content: this.post.content,
-                image: this.post.imagePath 
+                image: this.post.imagePath
               })
             });
         } else {
