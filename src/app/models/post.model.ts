@@ -3,4 +3,5 @@ export default interface IPost {
   title: string;
   content: string;
   imagePath?: string;
+  canEdit?: boolean;
 }

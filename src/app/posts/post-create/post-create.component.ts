@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import IPost from '../post.model';
-import { PostsService } from '../services/posts.service';
+import IPost from '../../models/post.model';
+import { PostsService } from '../../services/posts.service';
 import { mimeType } from '../validators/mime-type.validator'
 
 @Component({

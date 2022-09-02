@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Subject } from 'rxjs';
-import IPost from '../post.model';
+import IPost from '../models/post.model';
 
 @Injectable()
 export class PostsService {
@@ -28,7 +28,8 @@ export class PostsService {
                 title: post.title,
                 content: post.content,
                 id: post._id,
-                imagePath: post.imagePath
+                imagePath: post.imagePath,
+                canEdit: post.canEdit
               }
             }),
             maxPosts: postData.maxPosts
