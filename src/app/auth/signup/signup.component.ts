@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -13,9 +14,18 @@ export class SignupComponent implements OnInit {
     password: ''
   }
 
+  private authStatusSub: Subscription = new Subscription;
+
   constructor(public authService: AuthService) { }
 
   ngOnInit(): void {
+    this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
+      authStatus => this.isLoading = authStatus
+    )
+  }
+
+  ngOnDestroy(): void {
+    this.authStatusSub.unsubscribe()
   }
 
   signup() {

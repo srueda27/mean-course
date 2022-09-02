@@ -95,7 +95,7 @@ router.post('',
   multer({ storage }).single('image'),
   (req, res, next) => {
     if (!req.userData) {
-      res.status(401).json({ message: 'Auth failed' })
+      res.status(401).json({ message: 'You are not authorized' })
     }
 
     const url = `${req.protocol}://${req.get('host')}`
@@ -107,17 +107,21 @@ router.post('',
       creator: req.userData.userId
     });
 
-    post.save().then(result => {
-      res.status(201).json({
-        message: 'Post added',
-        post: {
-          id: result._id,
-          title: result.title,
-          content: result.content,
-          imagePath: result.imagePath
-        }
+    post.save()
+      .then(result => {
+        res.status(201).json({
+          message: 'Post added',
+          post: {
+            id: result._id,
+            title: result.title,
+            content: result.content,
+            imagePath: result.imagePath
+          }
+        })
       })
-    });
+      .catch(error => {
+        res.status(500).json({ message: 'Creating a post failed!' })
+      });
   })
 
 router.put('/:id',
@@ -125,7 +129,7 @@ router.put('/:id',
   multer({ storage }).single('image'),
   (req, res, next) => {
     if (!req.userData) {
-      res.status(401).json({ message: 'Auth failed' })
+      res.status(401).json({ message: 'You are not authorized' })
     }
 
     let imagePath = req.body.imagePath;
@@ -148,20 +152,24 @@ router.put('/:id',
         creator: req.userData.userId
       },
       post
-    ).then(result => {
-      if (result.modifiedCount > 0) {
-        res.status(200).json({ message: 'Update' })
-      } else {
-        res.status(401).json({ message: 'Unauthorized User' })
-      }
-    })
+    )
+      .then(result => {
+        if (result.modifiedCount > 0) {
+          res.status(200).json({ message: 'Update succesful!' })
+        } else {
+          res.status(401).json({ message: 'Unauthorized User' })
+        }
+      })
+      .catch(error => {
+        res.status(500).json({ message: 'Updating a post failed!' })
+      });
   })
 
 router.delete('/:id',
   checkAuth,
   (req, res, next) => {
     if (!req.userData) {
-      res.status(401).json({ message: 'Auth failed' })
+      res.status(401).json({ message: 'You are not authorized' })
     }
 
     Post.deleteOne({
@@ -175,6 +183,9 @@ router.delete('/:id',
           res.status(401).json({ message: 'Unauthorized User' })
         }
       })
+      .catch(error => {
+        res.status(500).json({ message: 'Deleting a post failed!' })
+      });
   });
 
 module.exports = router;

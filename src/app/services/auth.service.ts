@@ -11,6 +11,7 @@ export class AuthService {
   private token: string | undefined
   private authStatus = false
   private tokenTimer: any | undefined;
+  private authStatusListener = new Subject<boolean>()
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -22,27 +23,41 @@ export class AuthService {
     return this.authStatus
   }
 
+  getAuthStatusListener() {
+    return this.authStatusListener.asObservable()
+  }
+
   createUser(email: string, password: string) {
     const authData: IAuthData = { email, password }
     this.http.post('http://localhost:3000/api/user/signup', authData)
-      .subscribe(response => {
-        this.router.navigate(['/'])
+      .subscribe({
+        next: (response) => {
+          this.router.navigate(['/'])
+        },
+        error: er => {
+          this.authStatusListener.next(false)
+        }
       })
   }
 
   login(email: string, password: string) {
     const authData: IAuthData = { email, password }
     this.http.post<{ token: string, expiresIn: number }>('http://localhost:3000/api/user/login', authData)
-      .subscribe(response => {
-        this.token = response.token
+      .subscribe({
+        next: response => {
+          this.token = response.token
 
-        if (this.token) {
-          const expiresInDuration = response.expiresIn
-          this.setAuthTimer(expiresInDuration)
-          this.authStatus = true
-          const expirationDate = new Date(new Date().getTime() + (expiresInDuration * 1000))
-          this.saveAuthData(this.token, expirationDate)
-          this.router.navigate(['/'])
+          if (this.token) {
+            const expiresInDuration = response.expiresIn
+            this.setAuthTimer(expiresInDuration)
+            this.authStatus = true
+            const expirationDate = new Date(new Date().getTime() + (expiresInDuration * 1000))
+            this.saveAuthData(this.token, expirationDate)
+            this.router.navigate(['/'])
+          }
+        },
+        error: err => {
+          this.authStatusListener.next(false)
         }
       })
   }
