@@ -2,7 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { map, Subject } from 'rxjs';
+
+import { environment } from 'src/environments/environment';
 import IPost from '../models/post.model';
+
+const BACKEND_URL = `${environment.apiUrl}/posts`
 
 @Injectable()
 export class PostsService {
@@ -19,7 +23,7 @@ export class PostsService {
 
     // no need to unsubscribe from the httpClient it is done by Angular
     const queryParams = `?pageSize=${postsPerPage}&currentPage=${currentPage}`
-    this.http.get<{ message: string, posts: any, maxPosts: number }>('http://localhost:3000/api/posts' + queryParams)
+    this.http.get<{ message: string, posts: any, maxPosts: number }>(BACKEND_URL + queryParams)
       .pipe(
         map(postData => {
           return {
@@ -47,7 +51,7 @@ export class PostsService {
   }
 
   getPost(id: string) {
-    return this.http.get<{ _id: string, title: string, content: string, imagePath: string }>(`http://localhost:3000/api/posts/${id}`)
+    return this.http.get<{ _id: string, title: string, content: string, imagePath: string }>(`${BACKEND_URL}/${id}`)
   }
 
   addPosts(title: string, content: string, image: File) {
@@ -57,7 +61,7 @@ export class PostsService {
     postData.append('content', content)
     postData.append('image', image, title)
 
-    this.http.post<{ message: string, post: IPost }>('http://localhost:3000/api/posts', postData)
+    this.http.post<{ message: string, post: IPost }>(BACKEND_URL, postData)
       .subscribe((responseData) => {
         this.router.navigate(['/'])
       })
@@ -76,13 +80,13 @@ export class PostsService {
       postData = { id, title, content, imagePath: image }
     }
 
-    this.http.put(`http://localhost:3000/api/posts/${id}`, postData)
+    this.http.put(`${BACKEND_URL}/${id}`, postData)
       .subscribe(response => {
         this.router.navigate(['/'])
       })
   }
 
   deletePost(id: string) {
-    return this.http.delete(`http://localhost:3000/api/posts/${id}`)
+    return this.http.delete(`${BACKEND_URL}/${id}`)
   }
 }
