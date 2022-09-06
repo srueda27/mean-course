@@ -11,6 +11,10 @@ const BACKEND_URL = `${environment.apiUrl}/posts`
 
 @Injectable()
 export class PostsService {
+  private postsPerPage = 10;
+  private currentPage = 1;
+  private maxPosts = 1;
+
   private posts: IPost[] = []
   private postsUpdated = new Subject<{ posts: IPost[], postCount: number }>();
 
@@ -24,6 +28,8 @@ export class PostsService {
     // This is being made in other to avoid unwanted manipulation of the object
 
     // no need to unsubscribe from the httpClient it is done by Angular
+    this.currentPage = currentPage
+    this.postsPerPage = postsPerPage
     const queryParams = `?pageSize=${postsPerPage}&currentPage=${currentPage}`
     this.http.get<{ message: string, posts: any, maxPosts: number }>(BACKEND_URL + queryParams)
       .pipe(
@@ -45,6 +51,7 @@ export class PostsService {
       .subscribe((pipedPostsData: { posts: IPost[], maxPosts: number }) => {
         this.posts = pipedPostsData.posts;
         this.postsUpdated.next({ posts: [...this.posts], postCount: pipedPostsData.maxPosts });
+        this.maxPosts = pipedPostsData.maxPosts
       });
   }
 
@@ -96,13 +103,14 @@ export class PostsService {
   private observePostSocket() {
     this.socketService.receiveCreatePost().subscribe((post: IPost) => {
       console.log('Create post socket received')
-      this.refreshPosts(post)
+      this.refreshPosts()
     })
   }
 
-  private refreshPosts(post: IPost) {
-    if (!post.canEdit) {
-      this.getPosts(10, 1)
+  private refreshPosts() {
+    // unless another user is not on the view post page... don't get all posts
+    if (window.location.pathname == '/') {
+      this.getPosts(this.postsPerPage, this.currentPage + 1)
     }
   }
 }

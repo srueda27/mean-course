@@ -57,7 +57,6 @@ server.on("error", onError);
 server.on("listening", onListening);
 
 socketIOServer.on('connection', (socket) => {
-  console.log('Socket connected')
 
   socket.on('createPost', (post) => {
     socketIOServer.emit('createPost', post)

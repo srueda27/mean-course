@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { DefaultEventsMap } from '@socket.io/component-emitter';
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client'
-import { environment } from 'src/environments/environment';
 import IPost from '../models/post.model';
 
 @Injectable({
