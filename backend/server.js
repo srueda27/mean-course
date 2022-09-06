@@ -1,4 +1,4 @@
-const app = require("./backend/app");
+const app = require("./app");
 const debug = require("debug")("node-angular");
 const http = require("http");
 
@@ -47,6 +47,34 @@ const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
 const server = http.createServer(app);
+const socketIOServer = require('socket.io')(server, {
+  cors: {
+    origins: ["http://localhost:4200"]
+  }
+});
+
 server.on("error", onError);
 server.on("listening", onListening);
-server.listen(port);
+
+socketIOServer.on('connection', (socket) => {
+  console.log('Socket connected')
+
+  socket.on('createPost', (post) => {
+    socketIOServer.emit('createPost', post)
+    console.log('Create Post socket emitted')
+  })
+
+  socket.on('updatePost', (post) => {
+    socketIOServer.emit('updatePost', post)
+    console.log('Update Post socket emitted')
+  })
+
+  socket.on('deletePost', (post) => {
+    socketIOServer.emit('deletePost', post)
+    console.log('Delete Post socket emitted')
+  })
+})
+
+server.listen(port, () => {
+  console.log('Listening on port:', port)
+});

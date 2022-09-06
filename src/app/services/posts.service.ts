@@ -5,16 +5,18 @@ import { map, Subject } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 import IPost from '../models/post.model';
+import { SocketService } from './socket.service';
 
 const BACKEND_URL = `${environment.apiUrl}/posts`
 
 @Injectable()
 export class PostsService {
   private posts: IPost[] = []
-  // constructor() { }
   private postsUpdated = new Subject<{ posts: IPost[], postCount: number }>();
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private socketService: SocketService) {
+    this.observePostSocket();
+  }
 
   getPosts(postsPerPage: number, currentPage: number) {
     // It is sending a copy of the array, and since it is not sending the same object it is not being updated
@@ -63,6 +65,7 @@ export class PostsService {
 
     this.http.post<{ message: string, post: IPost }>(BACKEND_URL, postData)
       .subscribe((responseData) => {
+        this.socketService.emitCreatePost(responseData.post)
         this.router.navigate(['/'])
       })
   }
@@ -88,5 +91,18 @@ export class PostsService {
 
   deletePost(id: string) {
     return this.http.delete(`${BACKEND_URL}/${id}`)
+  }
+
+  private observePostSocket() {
+    this.socketService.receiveCreatePost().subscribe((post: IPost) => {
+      console.log('Create post socket received')
+      this.refreshPosts(post)
+    })
+  }
+
+  private refreshPosts(post: IPost) {
+    if (!post.canEdit) {
+      this.getPosts(10, 1)
+    }
   }
 }

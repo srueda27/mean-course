@@ -10,7 +10,7 @@ const app = express();
 
 mongoose.connect(`mongodb+srv://nasa-admin:${process.env.MONGO_PASSWORD}@nasacluster.ga5zg.mongodb.net/mean-project?retryWrites=true&w=majority`)
   .then(() => {
-    console.log('connected')
+    console.log('Mongo connected')
   })
   .catch(() => {
     console.log('Failed mongo connection')
